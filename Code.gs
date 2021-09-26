@@ -11,10 +11,11 @@
 
 /**
  * Sends an email to addrs containing a formatted version of data.
- * @param {!Array<string>} addrs "to" email address
+ * @param {!Array<string>} addrs "to" email addresses
+ * @param {!Array<string>} heads "cc" email addresses
  * @param {!Object} data Request data
  */
-const sendEmail = (addrs, data = undefined) => {
+const sendEmail = (addrs, heads, data = undefined) => {
   let quota = MailApp.getRemainingDailyQuota();
   if (quota <= 0) {
     Logger.log(`Reached daily email quota.`);
@@ -24,6 +25,7 @@ const sendEmail = (addrs, data = undefined) => {
   }
   MailApp.sendEmail({
     to: addrs.join(","),
+    cc: heads.join(","),
     subject: "Peer Tutoring Request",
     htmlBody: data !== undefined ? `
 <b>From</b>: ${data.name} (${data.email})
@@ -32,10 +34,12 @@ const sendEmail = (addrs, data = undefined) => {
 <br />
 <b>Description</b>: ${data.desc}
 <br />
-<b>Attachments</b>: ${data.files.join(", ")}
+<b>Attachments</b>: ${data.length == 0 ? "None" : data.files.join(", ")}
 <br />
 <br />
 <b>Contacted Tutors</b>: ${addrs.map((a)=>a.split("@")[0]).join(", ")}
+<br />
+<b>Copied Heads</b>: ${heads.map((a)=>a.split("@")[0]).join(", ")}
 <br />
 <br />
 <i>This is an automated message.</i> 
@@ -89,8 +93,17 @@ const getRoster = () => {
     }
   }
   let file = findFile(files);
-  let ss = SpreadsheetApp.open(file);
-  let sheet = ss.getSheetByName("Sheet1");
+  return file;
+}
+
+/**
+ * Returns the available tutors from a roster.
+ * @param {!Object} roster Roster spreadsheet
+ * @return {!Object}
+ */
+const getTutors = (roster) => {
+  let ss = SpreadsheetApp.open(roster);
+  let sheet = ss.getSheetByName("Tutors");
   let data = sheet
     .getDataRange()
     .getValues()
@@ -108,15 +121,40 @@ const getRoster = () => {
 }
 
 /**
+ * Returns the current head tutors from a roster.
+ * @param {!Object} roster Roster spreadsheet
+ * @return {!Object}
+ */
+const getHeads = (roster) => {
+  let ss = SpreadsheetApp.open(roster);
+  let sheet = ss.getSheetByName("Heads");
+  Logger.log(sheet
+    .getDataRange()
+    .getValues()
+    .slice(1, -1));
+  let data = sheet
+    .getDataRange()
+    .getValues()
+    .slice(1, -1)
+    .map((d) => {
+    return {
+      name: d[0],
+      email: d[1]
+    }
+  });
+  return data;
+}
+
+/**
  * Filters roster for which tutors are available for a specific date and subject.
  * @param {!Date} date Date to search
  * @param {string} subject Subject to search
  * @return {!Object}
  */
-const checkAvailability = (date, subject) => {
+const checkAvailability = (roster, date, subject) => {
   // Uncomment to test a specific day.
   // date = new Date(2021, 8, 28);
-  let avail = getRoster().filter((d) => {
+  let avail = getTutors(roster).filter((d) => {
     return d.subjects.includes(subject) && 
     (d.days.includes(new Intl.DateTimeFormat(
       "en-US", { weekday: 'long'
@@ -139,12 +177,16 @@ const onFormSubmit = (e) => {
     files: [data[5]].flat(),
     subject: data[6]
   };
-  let avail = checkAvailability(obj.date, obj.subject);
+  let roster = getRoster();
+  let avail = checkAvailability(roster, obj.date, obj.subject);
   let addrs = avail.map((a) => {
     return a.email
   });
+  let heads = getHeads(roster).map((a) => {
+    return a.email
+  });
   if (addrs.length != 0) {
-    sendEmail(addrs, formatEmail(
+    sendEmail(addrs, heads, formatEmail(
       obj.name,
       obj.email,
       obj.subject,

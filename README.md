@@ -5,14 +5,22 @@ Backup code for the Peer Tutoring automation system.
 ## Tutor Migration Instructions
 
 1. Create a Google Sheet called peertutoring_XXXX-YYYY where XXXX-YYYY is the current school year
-2. Organize peer tutor information in rows in Sheet1 as follows with the header included*:
+2. Organize peer tutor information in rows in a sheet called **Tutors** as follows with the header included\*:
  
 | Name | Email | Day | Consult | Subjects |
 | ---- | ----- | --- | ------- | -------- |
 | Noah Trupin | ntrupin23@lawrenceville.org | Monday, Tuesday | TRUE | Math I-III, Honors Computer Programming |
 | ... | ... | ... | ... | ... |
 
-\* *The names of the headers don't matter. Data just needs to start in the second row.*
+3. Organize head tutor information in rows in a sheet called **Heads** as follows with the header included \*\*:
+
+| Name | Email |
+| ---- | ----- |
+| Sam Tang | stang22@lawrenceville.org |
+
+\* *Noah Trupin is an example. The names of the headers don't matter. Data just needs to start in the second row.*
+
+\*\* *Sam Tang is an example. See previous point about headers.*
 
 ## Code Migration Instructions
 

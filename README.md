@@ -27,7 +27,12 @@ Backup code for the Peer Tutoring automation system.
 **Order of operations matters**. Doing these out of order may cause triggers to not fire or cause the script to not link to the spreadsheet.
 
 1. Create a new Google Sheet
-2. Select Tools -> Create a form
-4. Select Tools -> Script editor
-5. Copy contents of Code.gs to the new Code.gs
-6. Run each function in the file to obtain OAuth permissions 
+2. In Google Sheets, select Tools -> Create a form
+3. In Google Sheets, select Tools -> Script editor
+4. In Apps Script, copy contents of Code.gs to the new Code.gs
+5. Select Triggers -> Add Triggers and configure as follows:
+   * Choose which function to run: `onFormSumbit`
+   * Choose which deployment should run: `Head`
+   * Select event source: `From spreadsheet`
+   * Select event type: `On form submit`
+6. Run each function in Code.gs to obtain OAuth permissions 

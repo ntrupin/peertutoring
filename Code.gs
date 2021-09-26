@@ -114,7 +114,8 @@ const getRoster = () => {
  * @return {!Object}
  */
 const checkAvailability = (date, subject) => {
-  date = new Date(2021, 8, 28);
+  // Uncomment to test a specific day.
+  // date = new Date(2021, 8, 28);
   let avail = getRoster().filter((d) => {
     return d.subjects.includes(subject) && 
     (d.days.includes(new Intl.DateTimeFormat(

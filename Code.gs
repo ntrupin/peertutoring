@@ -29,25 +29,19 @@ const sendEmail = (addrs, heads, data = undefined) => {
     subject: "Peer Tutoring Request",
     htmlBody: data !== undefined ? `
 <b>From</b>: ${data.name} (${data.email})
-<br />
-<br />
+<br /><br />
 <b>Subject</b>: ${data.subject}
-<br />
-<br />
+<br /><br />
 <b>Description</b>: ${data.desc}
-<br />
-<br />
+<br /><br />
 <b>Attachments</b>: ${data.files.length == 0 ? "None" : data.files.join(", ")}
-<br />
-<br />
-<br />
+<br /><br /><br />
 <b>Contacted Tutors</b>: ${addrs.map((a)=>a.split("@")[0]).join(", ")}
-<br />
-<br />
+<br /><br />
 <b>Copied Heads</b>: ${heads.map((a)=>a.split("@")[0]).join(", ")}
-<br />
-<br />
-<br />
+<br /><br /><br />
+If you are available to help, please <b>forward</b> this email to the copied head tutors to claim this assignment.
+<br /><br /><br />
 <i>This is an automated message.</i> 
     ` : `This message has no body.`
   })

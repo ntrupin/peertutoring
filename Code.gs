@@ -34,7 +34,7 @@ const sendEmail = (addrs, heads, data = undefined) => {
 <br />
 <b>Description</b>: ${data.desc}
 <br />
-<b>Attachments</b>: ${data.length == 0 ? "None" : data.files.join(", ")}
+<b>Attachments</b>: ${data.files.length == 0 ? "None" : data.files.join(", ")}
 <br />
 <br />
 <b>Contacted Tutors</b>: ${addrs.map((a)=>a.split("@")[0]).join(", ")}
@@ -107,7 +107,7 @@ const getTutors = (roster) => {
   let data = sheet
     .getDataRange()
     .getValues()
-    .slice(1, -1)
+    .slice(1)
     .map((d) => {
     return {
       name: d[0],
@@ -128,14 +128,10 @@ const getTutors = (roster) => {
 const getHeads = (roster) => {
   let ss = SpreadsheetApp.open(roster);
   let sheet = ss.getSheetByName("Heads");
-  Logger.log(sheet
-    .getDataRange()
-    .getValues()
-    .slice(1, -1));
   let data = sheet
     .getDataRange()
     .getValues()
-    .slice(1, -1)
+    .slice(1)
     .map((d) => {
     return {
       name: d[0],

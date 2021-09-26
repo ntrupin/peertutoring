@@ -3,6 +3,8 @@
  * natrupin@gmail.com
  * ntrupin23@lawrenceville.org
  * 
+ * Backed up at https://github.com/ntrupin/peertutoring
+ * 
  * @fileoverview Google Sheets macro and support functions for automated Peer Tutor scheduling.
  * @package
  */
@@ -36,7 +38,7 @@ const sendEmail = (addrs, data = undefined) => {
 <b>Contacted Tutors</b>: ${addrs.map((a)=>a.split("@")[0]).join(", ")}
 <br />
 <br />
-<i>This is an automated test message. Only Noah received this email.</i> 
+<i>This is an automated message.</i> 
     ` : `This message has no body.`
   })
 }
@@ -115,9 +117,9 @@ const checkAvailability = (date, subject) => {
   date = new Date(2021, 8, 28);
   let avail = getRoster().filter((d) => {
     return d.subjects.includes(subject) && 
-    d.days.includes(new Intl.DateTimeFormat(
+    (d.days.includes(new Intl.DateTimeFormat(
       "en-US", { weekday: 'long'
-      }).format(date))
+      }).format(date)) || d.consult)
   });
   return avail;
 }

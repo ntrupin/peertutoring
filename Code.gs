@@ -30,16 +30,22 @@ const sendEmail = (addrs, heads, data = undefined) => {
     htmlBody: data !== undefined ? `
 <b>From</b>: ${data.name} (${data.email})
 <br />
+<br />
 <b>Subject</b>: ${data.subject}
 <br />
+<br />
 <b>Description</b>: ${data.desc}
+<br />
 <br />
 <b>Attachments</b>: ${data.files.length == 0 ? "None" : data.files.join(", ")}
 <br />
 <br />
+<br />
 <b>Contacted Tutors</b>: ${addrs.map((a)=>a.split("@")[0]).join(", ")}
 <br />
+<br />
 <b>Copied Heads</b>: ${heads.map((a)=>a.split("@")[0]).join(", ")}
+<br />
 <br />
 <br />
 <i>This is an automated message.</i> 

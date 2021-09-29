@@ -34,7 +34,7 @@ const sendEmail = (addrs, heads, data = undefined) => {
 <br /><br />
 <b>Description</b>: ${data.desc}
 <br /><br />
-<b>Attachments</b>: ${data.files.length == 0 ? "None" : data.files.join(", ")}
+<b>Attachments</b>: ${!data.files.length ? "None" : data.files.join(", ")}
 <br /><br /><br />
 <b>Contacted Tutors</b>: ${addrs.map((a)=>a.split("@")[0]).join(", ")}
 <br /><br />
@@ -170,7 +170,7 @@ const onFormSubmit = (e) => {
     email: data[2],
     name: data[3],
     desc: data[4],
-    files: [data[5]].flat(),
+    files: [data[5]],
     subject: data[6]
   };
   let roster = getRoster();

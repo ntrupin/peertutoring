@@ -26,7 +26,7 @@ const sendEmail = (addrs, heads, data = undefined) => {
   MailApp.sendEmail({
     to: addrs.join(","),
     cc: heads.join(","),
-    subject: "Peer Tutoring Request",
+    subject: `PEER TUTORING REQUEST: ${data.subject}`,
     htmlBody: data !== undefined ? `
 <b>From</b>: ${data.name} (${data.email})
 <br /><br />
@@ -40,7 +40,7 @@ const sendEmail = (addrs, heads, data = undefined) => {
 <br /><br />
 <b>Copied Heads</b>: ${heads.map((a)=>a.split("@")[0]).join(", ")}
 <br /><br /><br />
-If you are available to help, please <b>forward</b> this email to the copied head tutors to claim this assignment.
+If you are available to help, please <b>REPLY ALL</b> to this email to the copied head tutors to claim this assignment.
 <br /><br /><br />
 <i>This is an automated message.</i> 
     ` : `This message has no body.`
@@ -103,18 +103,15 @@ const getRoster = () => {
  */
 const getTutors = (roster) => {
   let ss = SpreadsheetApp.open(roster);
-  let sheet = ss.getSheetByName("Tutors");
+  let sheet = ss.getSheetByName("Form Responses 1");
   let data = sheet
     .getDataRange()
     .getValues()
     .slice(1)
     .map((d) => {
     return {
-      name: d[0],
       email: d[1],
-      days: d[2].split(", "),
-      consult: d[3],
-      subjects: d[4].split(", ")
+      subjects: d[2].split(", ")
     }
   });
   return data;
@@ -134,7 +131,6 @@ const getHeads = (roster) => {
     .slice(1)
     .map((d) => {
     return {
-      name: d[0],
       email: d[1]
     }
   });
@@ -151,10 +147,10 @@ const checkAvailability = (roster, date, subject) => {
   // Uncomment to test a specific day.
   // date = new Date(2021, 8, 28);
   let avail = getTutors(roster).filter((d) => {
-    return d.subjects.includes(subject) && 
+    return d.subjects.includes(subject)/* && 
     (d.days.includes(new Intl.DateTimeFormat(
       "en-US", { weekday: 'long'
-      }).format(date)) || d.consult)
+      }).format(date)) || d.consult)*/
   });
   return avail;
 }
@@ -167,11 +163,11 @@ const onFormSubmit = (e) => {
   let data = e.range.getValues()[0];
   let obj = {
     date: new Date(data[0]),
-    email: data[2],
+    email: data[7],
     name: data[3],
     desc: data[4],
     files: [data[5]],
-    subject: data[6]
+    subject: data[8]
   };
   let roster = getRoster();
   let avail = checkAvailability(roster, obj.date, obj.subject);
